@@ -35,6 +35,7 @@ from qibullet import PepperVirtual
 
 from simALModulesWrappers.ALMotion import ALMotionProxy
 from simALModulesWrappers.ALPosture import ALPostureProxy
+from simALModulesWrappers.ALVideoDevice import ALVideoDeviceProxy
 
 
 
@@ -57,7 +58,7 @@ class NaoqibulletWrapper:
         #if(motionService.isRunning):
         try:
             motionService = session.service("ALMotion")
-            motionService.stop()
+            #motionService.stop()
             motionService.exit() # NOTE : Makes an exception but works !!!
         except RuntimeError:
             pass
@@ -67,10 +68,20 @@ class NaoqibulletWrapper:
         #if(postureService.isRunning):
         try:
             postureService = session.service("ALPosture")
-            postureService.stop()
+            #postureService.stop()
             postureService.exit() # NOTE : Makes an exception but works !!!
         except RuntimeError:
-            pass                
+            pass     
+
+        # Exit ALVideoDevice Service
+        
+        #if(postureService.isRunning):
+        try:
+            videoDeviceService = session.service("ALVideoDevice")
+            #postureService.stop()
+            videoDeviceService.exit() # NOTE : Makes an exception but works !!!
+        except RuntimeError:
+            pass                        
 
         #sleep(2)
 
@@ -83,6 +94,11 @@ class NaoqibulletWrapper:
         simPostureService = ALPostureProxy(pepperSim)
         session.registerService("ALPosture", simPostureService)
         debug("Starting ALPosture")
+
+        # Register service ALVideoDevice
+        simVideoDeviceService = ALVideoDeviceProxy(pepperSim)
+        session.registerService("ALVideoDevice", simVideoDeviceService)
+        debug("Starting ALVideoDevice")        
 
         # Start sensor thread
         sensorThread.start()
