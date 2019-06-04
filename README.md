@@ -1,11 +1,11 @@
 ## Wrap a qibullet simulated Pepper with a Naoqi instance
 
-###Dependencies
+### Dependencies
 
 * [qibullet](https://github.com/ProtolabSBRE/qibullet.git)
 * naoqi-bin
 
-###Example :
+### Example :
 
 ```python
 #!/usr/bin/env python
