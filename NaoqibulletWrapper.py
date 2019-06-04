@@ -54,8 +54,6 @@ class NaoqibulletWrapper:
         session = qiApp.session
 
         # Exit ALMotion Service
-        
-        #if(motionService.isRunning):
         try:
             motionService = session.service("ALMotion")
             #motionService.stop()
@@ -64,8 +62,6 @@ class NaoqibulletWrapper:
             pass
 
         # Exit ALPosture Service
-        
-        #if(postureService.isRunning):
         try:
             postureService = session.service("ALPosture")
             #postureService.stop()
@@ -74,14 +70,12 @@ class NaoqibulletWrapper:
             pass     
 
         # Exit ALVideoDevice Service
-        
-        #if(postureService.isRunning):
-        try:
-            videoDeviceService = session.service("ALVideoDevice")
-            #postureService.stop()
-            videoDeviceService.exit() # NOTE : Makes an exception but works !!!
-        except RuntimeError:
-            pass                        
+        #try:
+        #    videoDeviceService = session.service("ALVideoDevice")
+        #    #postureService.stop()
+        #    videoDeviceService.exit() # NOTE : Makes an exception but works !!!
+        #except RuntimeError:
+        #    pass                        
 
         #sleep(2)
 
@@ -96,9 +90,9 @@ class NaoqibulletWrapper:
         debug("Starting ALPosture")
 
         # Register service ALVideoDevice
-        simVideoDeviceService = ALVideoDeviceProxy(session, pepperSim)
-        session.registerService("ALVideoDevice", simVideoDeviceService)
-        debug("Starting ALVideoDevice")        
+        #simVideoDeviceService = ALVideoDeviceProxy(session, pepperSim)
+        #session.registerService("ALVideoDevice", simVideoDeviceService)
+        #debug("Starting ALVideoDevice")        
 
         # Start sensor thread
         sensorThread.start()
@@ -123,6 +117,8 @@ class SensorThread(threading.Thread):
 
         almemService = self.qiSession.service("ALMemory")
         motionService = self.qiSession.service("ALMotion")
+
+        #motionService.setAngles(["HeadPitch", "HeadYaw"], [1,1], [1,1])
 
         while( motionService.isRunning() ):
             frontLaser = self.pepper.getFrontLaserValue()
@@ -159,6 +155,8 @@ if __name__ == '__main__':
 
     # qi App Session
     qiApp = qi.Application(sys.argv)  
+    #qiSession = qiApp.session
+    #serviceMotion = qiSession.service("ALMotion")
 
     # Bullet Simulator
     simulation_manager = SimulationManager()
@@ -170,3 +168,5 @@ if __name__ == '__main__':
         spawn_ground_plane = True)        
     
     NaoqibulletWrapper(qiApp, pepperSim)
+
+    

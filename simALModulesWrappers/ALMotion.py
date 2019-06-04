@@ -69,10 +69,13 @@ class ALMotionProxy:
 
     def setAngles(self, joint_names, joint_values, percentage_speed):
         self.sim_pepper.setAngles(joint_names, joint_values, percentage_speed)   
-
-        for idx, joint_name in enumerate(joint_names):    
-            name = "Device/SubDeviceList/"+joint_name+"/Position/Actuator/Value"
-            self.mem.insertData(name, joint_values[idx])   
+        if isinstance(joint_names, list):
+            for idx, joint_name in enumerate(joint_names):    
+                name = "Device/SubDeviceList/"+joint_name+"/Position/Actuator/Value"
+                self.mem.insertData(name, joint_values[idx])   
+        else:
+            name = "Device/SubDeviceList/"+joint_names+"/Position/Actuator/Value"
+            self.mem.insertData(name, joint_values)    
 
     def getAngles(self, joint_names, useSensors):
         #print "getAngles ### " + joint_names
@@ -90,11 +93,11 @@ class ALMotionProxy:
         return self.sim_pepper.getAnglesPosition( name )	  	
 
     def getPosition(self, name, frame, useSensorValues):
-        #TODO: 
+        
         if name in self.BodyNames:
             name = self.getBodyNames(name)
-        
-        # JUST TO RETURN THE RIGHT FORMAT BUT WRONG
+        #TODO: 
+        # JUST TO RETURN THE RIGHT FORMAT BUT WRONG VALUES
         return [0, 0, 0, 0, 0, 0]    
 
     def getStiffnesses(self, joint_names):
@@ -103,6 +106,7 @@ class ALMotionProxy:
             joint_names = self.getBodyNames(joint_names)
         stiffnesses = []
         for name in joint_names:
+            #TODO : Put real values (if possible)
             stiffnesses.append(0.8)
         return stiffnesses
 
