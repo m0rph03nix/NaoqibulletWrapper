@@ -26,7 +26,7 @@ import qi
 
 class ALVideoDeviceProxy:
     
-    def __init__(self, sim_pepper):
+    def __init__(self, qiSession, sim_pepper):
         print("__init__ in ALVideoDevice")
 
         self.sim_pepper = sim_pepper  

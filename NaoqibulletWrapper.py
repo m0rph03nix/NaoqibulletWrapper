@@ -86,17 +86,17 @@ class NaoqibulletWrapper:
         #sleep(2)
 
         # Register service ALMotion
-        simMotionService = ALMotionProxy(pepperSim)
+        simMotionService = ALMotionProxy(session, pepperSim)
         session.registerService("ALMotion", simMotionService)
         debug("Starting ALMotion")
 
         # Register service ALPosture
-        simPostureService = ALPostureProxy(pepperSim)
+        simPostureService = ALPostureProxy(session, pepperSim)
         session.registerService("ALPosture", simPostureService)
         debug("Starting ALPosture")
 
         # Register service ALVideoDevice
-        simVideoDeviceService = ALVideoDeviceProxy(pepperSim)
+        simVideoDeviceService = ALVideoDeviceProxy(session, pepperSim)
         session.registerService("ALVideoDevice", simVideoDeviceService)
         debug("Starting ALVideoDevice")        
 
@@ -135,6 +135,14 @@ class SensorThread(threading.Thread):
             # A partir de la ligne 165. Faire le reverse !
 
             almemService.insertData("test", 1)
+
+            joint_names = motionService.getBodyNames("Body")
+
+            joint_values = self.pepper.getAnglesPosition(joint_names)
+
+            for idx, joint_name in enumerate(joint_names):    
+                name = "Device/SubDeviceList/"+joint_name+"/Position/Sensor/Value"
+                almemService.insertData(name, joint_values[idx])  
 
             sleep(0.1)
         
