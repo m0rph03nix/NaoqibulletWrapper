@@ -49,7 +49,7 @@ class NaoqibulletWrapper:
     def __init__(self, qiApp, pepperSim):
 
         qiApp.start()
-        sensorThread = SensorThread(qiApp, pepperSim)
+        self.sensorThread = SensorThread(qiApp, pepperSim)
 
         session = qiApp.session
 
@@ -95,15 +95,19 @@ class NaoqibulletWrapper:
         #debug("Starting ALVideoDevice")        
 
         # Start sensor thread
-        sensorThread.start()
-
-
-        qiApp.run()
-
-        sensorThread.join()
-
+        self.sensorThread.start()
 
         debug("NaoqibulletWrapper init done")
+
+
+    def __del__(self):
+        self.sensorThread.join()
+        debug("NaoqibulletWrapper deleted ! ")
+
+
+    def close(self):
+        self.sensorThread.join()
+        debug("NaoqibulletWrapper closed ! ")       
 
 
 
@@ -117,8 +121,6 @@ class SensorThread(threading.Thread):
 
         almemService = self.qiSession.service("ALMemory")
         motionService = self.qiSession.service("ALMotion")
-
-        #motionService.setAngles(["HeadPitch", "HeadYaw"], [1,1], [1,1])
 
         while( motionService.isRunning() ):
             frontLaser = self.pepper.getFrontLaserValue()
@@ -154,9 +156,7 @@ class SensorThread(threading.Thread):
 if __name__ == '__main__':
 
     # qi App Session
-    qiApp = qi.Application(sys.argv)  
-    #qiSession = qiApp.session
-    #serviceMotion = qiSession.service("ALMotion")
+    qiApp = qi.Application(sys.argv)     
 
     # Bullet Simulator
     simulation_manager = SimulationManager()
@@ -166,7 +166,19 @@ if __name__ == '__main__':
         translation = [0, 0, 0],
         quaternion = [0, 0, 0, 1],
         spawn_ground_plane = True)        
-    
-    NaoqibulletWrapper(qiApp, pepperSim)
+
+    # wrap qi App Session with Simulated Pepper     
+    wrap = NaoqibulletWrapper(qiApp, pepperSim) # /!\ keep instance to keep thread
+
+    # code example : move head
+    qiSession = qiApp.session
+    motionService = qiSession.service("ALMotion")  
+    motionService.setAngles(["HeadPitch", "HeadYaw"], [-1,-1], [1,1]) 
+
+    # block until stop is called.
+    qiApp.run()
+
+    # close nicely
+    wrap.close()
 
     
