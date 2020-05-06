@@ -37,8 +37,7 @@ class ALVideoDeviceProxy:
 
 
     def getImageRemote(self, suscriberID_handle):
-        img = self.sim_pepper.getCameraFrame()
-
+        img = self.sim_pepper.getFrame()
         #TODO: reverse algo of https://gist.github.com/takamin/990aa0133919aa58944d
 
         return img
