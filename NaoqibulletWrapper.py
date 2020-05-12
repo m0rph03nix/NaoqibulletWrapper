@@ -70,12 +70,12 @@ class NaoqibulletWrapper:
             pass     
 
         # Exit ALVideoDevice Service
-        #try:
-        #    videoDeviceService = session.service("ALVideoDevice")
-        #    #postureService.stop()
-        #    videoDeviceService.exit() # NOTE : Makes an exception but works !!!
-        #except RuntimeError:
-        #    pass                        
+        try:
+            videoDeviceService = session.service("ALVideoDevice")
+            #postureService.stop()
+            videoDeviceService.exit() # NOTE : Makes an exception but works !!!
+        except RuntimeError:
+            pass                        
 
         #sleep(2)
 
@@ -90,9 +90,9 @@ class NaoqibulletWrapper:
         debug("Starting ALPosture")
 
         # Register service ALVideoDevice
-        #simVideoDeviceService = ALVideoDeviceProxy(session, pepperSim)
-        #session.registerService("ALVideoDevice", simVideoDeviceService)
-        #debug("Starting ALVideoDevice")        
+        simVideoDeviceService = ALVideoDeviceProxy(session, pepperSim)
+        session.registerService("ALVideoDevice", simVideoDeviceService)
+        debug("Starting ALVideoDevice")        
 
         # Start sensor thread
         self.sensorThread.start()
