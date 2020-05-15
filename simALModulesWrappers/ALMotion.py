@@ -60,7 +60,19 @@ class ALMotionProxy:
                                 "LArm" : LArm,
                                 "RArm" : RArm
                             }                                
-
+        self.SensorNames = {
+                                "Battery" : Battery, 
+                                "BodyTemperature" : BodyTemperature, 
+                                "ChestButton" : ChestButton, 
+                                "Fsr" : Fsr, 
+                                "Laser" : Laser, 
+                                "Leds" : Leds, 
+                                "Sensors" : Sensors, 
+                                "Sonar" : Sonar, 
+                                "TactileGesture" : TactileGesture, 
+                                "Touch" : Touch
+                            } 
+                            
     def move(self, x, y, theta):
         self.sim_pepper.move(x, y, theta)
 
@@ -93,12 +105,32 @@ class ALMotionProxy:
         return self.sim_pepper.getAnglesPosition( name )	  	
 
     def getPosition(self, name, frame, useSensorValues):
-        
+
+        x = 0
+        y = 0
+        z = 0
+        wx = 0 
+        wy = 0
+        wz = 0
+
         if name in self.BodyNames:
             name = self.getBodyNames(name)
-        #TODO: 
-        # JUST TO RETURN THE RIGHT FORMAT BUT WRONG VALUES
-        return [0, 0, 0, 0, 0, 0]    
+        
+        else if name in self.SensorNames:
+            name = self.getSensorNames(name)
+            
+        #else if useSensorValues == True:
+
+        else if frame == 0:
+            wx, wy, wz = self.sim_pepper.getAnglesPosition(name)
+
+        else if frame == 1:
+            x, y, wz = self.sim_pepper.getPosition()
+
+        else if frame == 2:
+            wx, wy, wz = self.sim_pepper.getAnglesPosition(name)
+
+        return [x, y, z, wx, wy, wz]    
 
     def getStiffnesses(self, joint_names):
 
@@ -116,6 +148,12 @@ class ALMotionProxy:
     def getJointNames(self, name):	  
         if name in self.BodyNames: 
             return self.BodyNames[name]
+        else:
+            return []
+    
+    def getSensorNames(self, name):
+        if name in self.SensorNames:
+            return self.SensorNames[name] 
         else:
             return []
 

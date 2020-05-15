@@ -36,6 +36,9 @@ class ALVideoDeviceProxy:
         handle = self.sim_pepper.subscribeCamera(res)
         return handle
 
+    def unsubscribe(self, suscriberID_handle):
+        self.sim_pepper.unsubscribe()
+        return
 
     def getImageRemote(self, suscriberID_handle):
         print("start")
@@ -44,16 +47,6 @@ class ALVideoDeviceProxy:
         size = img.shape
         height = size[1]
         width = size[0]
-        image = np.zeros((height, width, 3), np.uint8)
-        #values = map(chr, list(img))
-        #i = 0
-        #for y in range(0, height):
-        #    for x in range(0, width):
-        #        image.itemset((y, x, 0), values[i + 0])
-        #        image.itemset((y, x, 1), values[i + 1])
-        #        image.itemset((y, x, 2), values[i + 2])
-        #        i += 3
-
         t_usec = qi.clockNow()/1000
         CamId = self.sim_pepper.getCameraLink()
         
@@ -73,3 +66,5 @@ class ALVideoDeviceProxy:
         print(Frames)
         return Frames
 
+    def releaseImage(self, suscriberID_handle):
+        
