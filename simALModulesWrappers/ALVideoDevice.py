@@ -63,8 +63,8 @@ class ALVideoDeviceProxy:
         Frames.append(0.4712389)
         Frames.append(-0.38397244)
 
-        print(Frames)
+        #print(Frames)
         return Frames
 
-    def releaseImage(self, suscriberID_handle):
+    #def releaseImage(self, suscriberID_handle):
         

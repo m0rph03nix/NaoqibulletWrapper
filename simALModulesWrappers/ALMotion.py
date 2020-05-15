@@ -59,19 +59,9 @@ class ALMotionProxy:
                                 "Leg"  : Leg,
                                 "LArm" : LArm,
                                 "RArm" : RArm
-                            }                                
-        self.SensorNames = {
-                                "Battery" : Battery, 
-                                "BodyTemperature" : BodyTemperature, 
-                                "ChestButton" : ChestButton, 
-                                "Fsr" : Fsr, 
-                                "Laser" : Laser, 
-                                "Leds" : Leds, 
-                                "Sensors" : Sensors, 
-                                "Sonar" : Sonar, 
-                                "TactileGesture" : TactileGesture, 
-                                "Touch" : Touch
-                            } 
+                            }           
+
+        self.SensorNames = ["Battery", "BodyTemperature", "ChestButton", "Fsr", "Laser", "Leds", "Sensors", "Sonar", "TactileGesture", "Touch"] 
                             
     def move(self, x, y, theta):
         self.sim_pepper.move(x, y, theta)
@@ -115,19 +105,22 @@ class ALMotionProxy:
 
         if name in self.BodyNames:
             name = self.getBodyNames(name)
-        
-        else if name in self.SensorNames:
-            name = self.getSensorNames(name)
-            
-        #else if useSensorValues == True:
+       
+        #elif name in self.SensorNames :
+            #if useSensorValues == True:
 
-        else if frame == 0:
+        if frame == 0:
             wx, wy, wz = self.sim_pepper.getAnglesPosition(name)
 
-        else if frame == 1:
+        elif frame == 1:
+            
             x, y, wz = self.sim_pepper.getPosition()
+            positions = self.sim_pepper.getAnglesPosition(name)
+            wx = positions[0]
+            wy = positions[1]
+            wz = positions[2]
 
-        else if frame == 2:
+        elif frame == 2:
             wx, wy, wz = self.sim_pepper.getAnglesPosition(name)
 
         return [x, y, z, wx, wy, wz]    
@@ -148,12 +141,6 @@ class ALMotionProxy:
     def getJointNames(self, name):	  
         if name in self.BodyNames: 
             return self.BodyNames[name]
-        else:
-            return []
-    
-    def getSensorNames(self, name):
-        if name in self.SensorNames:
-            return self.SensorNames[name] 
         else:
             return []
 

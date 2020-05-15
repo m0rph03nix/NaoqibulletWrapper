@@ -169,11 +169,34 @@ if __name__ == '__main__':
 
     # wrap qi App Session with Simulated Pepper     
     wrap = NaoqibulletWrapper(qiApp, pepperSim) # /!\ keep instance to keep thread
-
+    sensor = SensorThread(qiApp, pepperSim)
     # code example : move head
     qiSession = qiApp.session
-    motionService = qiSession.service("ALMotion")  
-    motionService.setAngles(["HeadPitch", "HeadYaw"], [-1,-1], [1,1]) 
+    motionService = qiSession.service("ALMotion") 
+    cameraService = qiSession.service("ALVideoDevice")
+    positionService = qiSession.service("ALPosture")
+
+    #Test camera
+    AL_kTopCamera = 0
+    AL_kQVGA = 1            # 320x240
+    AL_kBGRColorSpace = 13
+    captureDevice = cameraService.subscribeCamera(
+        "test", AL_kTopCamera, AL_kQVGA, AL_kBGRColorSpace, 10)
+    print("\n")
+    print(captureDevice)
+    print("\n")
+    result  = cameraService.getImageRemote(captureDevice)
+
+    #Test getPosition
+    name            = "Torso"
+    frame           = 1
+    useSensorValues = True
+
+    positionService.goToPosture("Stand", 0.6)
+    motionService.setAngles(["HeadPitch", "HeadYaw"], [0.5,0.3], [0.1,0.1]) 
+    motionService.moveTo(1, 1, 1.57, _async=True)
+    #sensor.run()
+    print(motionService.getPosition(name, frame, useSensorValues)) 
 
     # block until stop is called.
     qiApp.run()
