@@ -22,7 +22,7 @@ __maintainer__ =    'Raphael LEBER'
 
 
 import qi
-
+import numpy as np
 
 class ALVideoDeviceProxy:
     
@@ -33,13 +33,38 @@ class ALVideoDeviceProxy:
 
 
     def subscribeCamera(self, name, camIndex, res, colorsSpace, fps):
-        self.sim_pepper.subscribeCamera(camIndex, res)
+        handle = self.sim_pepper.subscribeCamera(res)
+        return handle
 
+    def unsubscribe(self, suscriberID_handle):
+        self.sim_pepper.unsubscribe()
+        return
 
     def getImageRemote(self, suscriberID_handle):
+        print("start")
+        Frames = []
         img = self.sim_pepper.getCameraFrame()
+        size = img.shape
+        height = size[1]
+        width = size[0]
+        t_usec = qi.clockNow()/1000
+        CamId = self.sim_pepper.getCameraLink()
+        
+        Frames.append(width)
+        Frames.append(height)
+        Frames.append(2)
+        Frames.append("kYUV422ColorSpace")
+        Frames.append(t_usec / 1000000)
+        Frames.append(t_usec % 1000000)
+        Frames.append(img)
+        Frames.append(CamId)
+        Frames.append(-0.4712389)
+        Frames.append(0.38397244)
+        Frames.append(0.4712389)
+        Frames.append(-0.38397244)
 
-        #TODO: reverse algo of https://gist.github.com/takamin/990aa0133919aa58944d
+        #print(Frames)
+        return Frames
 
-        return img
-
+    #def releaseImage(self, suscriberID_handle):
+        
